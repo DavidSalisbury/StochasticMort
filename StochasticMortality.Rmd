@@ -1,0 +1,53 @@
+---
+title: "StochasticMortality"
+author: "DavidSalisbury"
+date: "29 June 2016"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+
+
+#TODO: Make this a relatie reference so we can bundle the file in a github repo
+PMA92C10 <- read.csv("C:\\Users\\David\\Dropbox\\Code\\Data\\stripped pma92c10.xls - PMA92C10.csv")
+
+work_df <- PMA92C10
+
+x <- 40
+
+qxs <- work_df[work_df$age >= x,]$qx
+ages <- work_df[work_df$age >= x,]$age
+tpxs <- Reduce("*",1-qxs,1,accumulate=TRUE)
+#Reduce produces one more entry than you started with,
+#ie v length n, returns v length n+1. So level up ages.
+ages <- c(ages, max(ages)+1)
+
+exs_stoch_fn <- function(age, tpxs) {
+
+  rf <- runif(1, min=0, max=1)
+  approx(tpxs, age, rf)$y
+  
+  }
+
+
+exs_stoch_fn(ages, tpxs)
+
+c(exs_stoch_fn(ages, tpxs),exs_stoch_fn(ages, tpxs))
+
+
+ex_sample <- 
+
+```
+
+You can also embed plots, for example:
+
+```{r}
+a_n_cts <- function(i,t) {(1-(1+i)^-t)/(ln(1+i))}
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
